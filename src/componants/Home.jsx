@@ -1,11 +1,34 @@
 import React from 'react';
 import useLogic from './Logic';
+import Confetti from 'react-confetti';
+import { useState,useEffect } from 'react';
 
 const Home = () => {
   const { board, hendleClick, getStatusMessage, resetGame } = useLogic();
 
+  const [width, setWidth] = useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+      setHeight(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const winner = getStatusMessage().includes("wins");
+  const Showconfettie = winner
+
   return (
     <div className="w-full p-24 flex flex-col items-center">
+      {/* Confetti effect when a player wins */}
+      {Showconfettie && <Confetti width={width} height={height} />}
       <div className="text-2xl mb-4 ">
         {getStatusMessage()}
         <button className="border-2 w-15 bg-slate-500 p-2 m-6" onClick={resetGame}>
