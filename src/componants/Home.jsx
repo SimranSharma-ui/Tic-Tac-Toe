@@ -2,6 +2,7 @@ import React from 'react';
 import useLogic from './Logic';
 import Confetti from 'react-confetti';
 import { useState,useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const Home = () => {
   const { board, hendleClick, getStatusMessage, resetGame } = useLogic();
@@ -21,10 +22,23 @@ const Home = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+ const winnerMessage = getStatusMessage();
   const winner = getStatusMessage().includes("wins");
-  const Showconfettie = winner
-
+  const Showconfettie = winner;
+  useEffect(() => {
+    if (winner) {
+      Swal.fire({
+        title: 'Game Over!',
+        text: winnerMessage,
+        icon: 'success',
+        confirmButtonText: 'Play Again',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          resetGame();
+        }
+      });
+    }
+  }, [winner, winnerMessage, resetGame]);
   return (
     <div className="w-full p-24 flex flex-col items-center">
       {/* Confetti effect when a player wins */}
